@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./campus_utility.db
+      - AI_PROVIDER=mock
+      - SECRET_KEY=campus-utility-production-secure-jwt-secret-key-2026-campus-notice
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/campus_utility.db:/app/campus_utility.db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
